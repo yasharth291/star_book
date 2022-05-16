@@ -11,6 +11,7 @@ import '../package_sheet.dart';
 part 'license_data.dart';
 
 class AcknowledgementSheet extends StatelessWidget {
+  static const String route = '/preference/acknowledgement';
   final Future<_LicenseData> licenses = LicenseRegistry.licenses
       .fold<_LicenseData>(
         _LicenseData(),
@@ -43,7 +44,7 @@ class AcknowledgementSheet extends StatelessWidget {
           future: licenses,
           builder: (context, snapshot) {
             if (!snapshot.hasData) return Container();
-            final data = snapshot.data;
+            final data = snapshot.data!;
             return ListView(
               children: data.packages.map((package) {
                 return MyContainer(
@@ -59,7 +60,7 @@ class AcknowledgementSheet extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            getLicenseText(data.packageLicenseBindings[package].length),
+                            getLicenseText(data.packageLicenseBindings[package]!.length),
                             style: Style.footerNoteSecondary(context),
                           ),
                         ],
@@ -75,10 +76,10 @@ class AcknowledgementSheet extends StatelessWidget {
                   ),
                   onTap: () {
                     Navigator.of(context).pushNamed(
-                      'preference/acknowledgement/licenses',
+                      PackageSheet.route,
                       arguments: PackageSheetArgument(
                         package: package,
-                        licenses: data.packageLicenseBindings[package].map((index) => data.licenses[index]).toList(),
+                        licenses: data.packageLicenseBindings[package]!.map((index) => data.licenses[index]).toList(),
                         //
                       ),
                     );

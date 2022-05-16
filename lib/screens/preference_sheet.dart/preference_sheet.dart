@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart' as c;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:star_book/models/brightness.dart';
+import 'package:star_book/screens/acknowledgement_sheet/acknowledgement_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Files
 import '../../controllers/global_setting.dart';
-import '../../models/global_setting.dart';
 import '../../routes/route_generator.dart';
 import '../../services/notification_service.dart';
 import '../../styles/style.dart';
@@ -18,6 +19,7 @@ import '../time_picker_sheet.dart';
 
 part 'about_developer.dart';
 part 'legal.dart';
+part 'data_privacy.dart';
 
 Map<BrightnessOption, Widget> options = {
   BrightnessOption.auto: SlidingSegment(c.CupertinoIcons.circle_lefthalf_fill),
@@ -44,13 +46,14 @@ class SlidingSegment extends StatelessWidget {
 /// Preference Sheet Screen widget displays the
 /// settings option, Privacy Policy, LICENCE, Terms and Conditions etc.
 class PreferenceSheet extends StatefulWidget {
+  static const String route = '/preference/settings';
   @override
   PreferenceSheetState createState() => PreferenceSheetState();
 }
 
 class PreferenceSheetState extends State<PreferenceSheet> {
   BrightnessOption _selectedOption = GlobalSettingController.getBrightnessOption();
-  DateTime _reminderTime;
+  late DateTime _reminderTime;
 
   @override
   void initState() {
@@ -156,7 +159,7 @@ class PreferenceSheetState extends State<PreferenceSheet> {
                   ],
                 ),
                 onTap: () async {
-                  RouteSettings settings;
+                  RouteSettings? settings;
                   // Navigator.push(
                   //   context,
                   //   MaterialPageRoute(
@@ -181,6 +184,8 @@ class PreferenceSheetState extends State<PreferenceSheet> {
               Padding(padding: EdgeInsets.symmetric(vertical: 18)),
               AboutDeveloper(),
               Padding(padding: EdgeInsets.symmetric(vertical: 18)),
+              Privacy(),
+              Padding(padding: EdgeInsets.symmetric(vertical: 18)),
               Legal(),
               Padding(padding: EdgeInsets.symmetric(vertical: 18)),
               Container(
@@ -198,9 +203,9 @@ class PreferenceSheetState extends State<PreferenceSheet> {
     );
   }
 
-  void onSlidingSegmentChanged(BrightnessOption option) {
+  void onSlidingSegmentChanged(BrightnessOption? option) {
     setState(() {
-      _selectedOption = option;
+      _selectedOption = option!;
       GlobalSettingController.setbrightnessOption(_selectedOption);
       print(GlobalSettingController.getBrightnessOption().toString());
     });
@@ -211,12 +216,13 @@ class PreferenceSheetState extends State<PreferenceSheet> {
 ///
 /// [PreferenceSheet] initial route.
 class PreferenceRouteInitializer extends StatelessWidget {
+  static const String route = '/preference';
   PreferenceRouteInitializer();
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
-      initialRoute: 'preference/settings',
+      initialRoute: PreferenceSheet.route,
       onGenerateRoute: (settings) => RouteGenerator.preferenceRoute(settings),
     );
   }

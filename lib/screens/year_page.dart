@@ -6,6 +6,7 @@ import '../widgets/year.dart';
 
 /// Year Page Widget displays calender for current year and past 4 years and dates are colored with [Mood] color.
 class YearPage extends StatefulWidget {
+  static const String route = '/year';
   @override
   _YearPageState createState() => _YearPageState();
 }
@@ -27,12 +28,12 @@ class _YearPageState extends State<YearPage> {
           c.CupertinoColors.systemBackground,
           context,
         ),
-        middle: Text('Year'),
+        middle: const Text('Year'),
         previousPageTitle: 'Home',
         border: null,
       ),
       child: SafeArea(
-        minimum: EdgeInsets.symmetric(horizontal: 16),
+        minimum: const EdgeInsets.symmetric(horizontal: 16),
         child: ListView.builder(
           padding: EdgeInsets.zero,
           scrollDirection: Axis.vertical,

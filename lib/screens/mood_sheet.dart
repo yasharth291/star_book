@@ -9,6 +9,7 @@ import '../models/mood.dart';
 /// of moods, on picking a [Mood] it pop it's scope
 /// and pass the id back to the navigator
 class MoodSheet extends StatelessWidget {
+  static const String route = '/edit/mood';
   @override
   Widget build(BuildContext context) {
     return c.CupertinoPageScaffold(
@@ -21,7 +22,7 @@ class MoodSheet extends StatelessWidget {
           c.CupertinoColors.systemGrey6,
           context,
         ),
-        middle: Text("Mood"),
+        middle: const Text('Mood'),
         border: null,
       ),
       child: c.SingleChildScrollView(
@@ -29,7 +30,7 @@ class MoodSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Padding(padding: EdgeInsets.symmetric(vertical: 18)),
+              const Padding(padding: EdgeInsets.symmetric(vertical: 18)),
               ...mMoodList.map(
                 (e) {
                   return Column(
@@ -41,7 +42,7 @@ class MoodSheet extends StatelessWidget {
                           Navigator.of(context).pop(e.id);
                         },
                       ),
-                      Padding(padding: EdgeInsets.symmetric(vertical: 6)),
+                      const Padding(padding: EdgeInsets.symmetric(vertical: 6)),
                     ],
                   );
                 },

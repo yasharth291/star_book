@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart' as c;
 import 'package:flutter/widgets.dart';
+import 'package:star_book/screens/date_picker_sheet.dart';
+import 'package:star_book/screens/mood_sheet.dart';
 
 // Files
 import '../controllers/activity.dart';
@@ -15,6 +17,7 @@ import '../widgets/my_container.dart';
 ///
 /// Input form to create update and delete [Activity]
 class ActivityEditSheet extends StatefulWidget {
+  static const String route = '/edit/title';
   ActivityEditSheet(this.activity);
 
   final Activity activity;
@@ -24,8 +27,8 @@ class ActivityEditSheet extends StatefulWidget {
 }
 
 class _ActivityEditSheetState extends State<ActivityEditSheet> {
-  Activity activity;
-  ActivityType type;
+  Activity? activity;
+  late ActivityType type;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
@@ -33,9 +36,9 @@ class _ActivityEditSheetState extends State<ActivityEditSheet> {
   void initState() {
     super.initState();
     activity = Activity.from(widget.activity);
-    titleController.text = activity.title;
-    noteController.text = activity.note;
-    type = (activity.moodId == null) ? ActivityType.add : ActivityType.edit;
+    titleController.text = activity?.title ?? '';
+    noteController.text = activity?.note ?? '';
+    type = (activity?.moodId == null) ? ActivityType.add : ActivityType.edit;
     titleController.addListener(onTitleChange);
     noteController.addListener(onNoteChange);
   }
@@ -48,52 +51,52 @@ class _ActivityEditSheetState extends State<ActivityEditSheet> {
   }
 
   void onTitleChange() {
-    this.activity.title = titleController.text;
+    this.activity = this.activity?.copyWith(title: titleController.text);
     setState(() {});
   }
 
   void onNoteChange() {
-    this.activity.note = noteController.text;
+    this.activity = this.activity?.copyWith(note: noteController.text);
     setState(() {});
   }
 
   void onDone(BuildContext context) async {
-    if (activity.isFilled()) {
-      ActivityController.update(activity);
+    if (activity!.isFilled()) {
+      ActivityController.update(activity!);
       Navigator.of(context, rootNavigator: true).pop();
     }
   }
 
   void onDelete(BuildContext context) async {
-    await ActivityController.delete(activity);
+    await ActivityController.delete(activity!);
     Navigator.of(context, rootNavigator: true).pop();
   }
 
   void onMoodTap() async {
-    dynamic moodId = await Navigator.of(context).pushNamed('edit/mood');
-    activity.moodId = moodId;
+    dynamic moodId = await Navigator.of(context).pushNamed(MoodSheet.route);
+    activity = activity?.copyWith(moodId: moodId);
     setState(() {});
   }
 
   void onDateTap() async {
     dynamic date = await Navigator.of(context)
-        .pushNamed('edit/date', arguments: {'day': activity.day, 'month': activity.month, 'year': activity.year});
+        .pushNamed(DatePickerSheet.route, arguments: {'day': activity?.day, 'month': activity?.month, 'year': activity?.year});
 
     // After getting date update the state.
     setState(() {
       activity = ActivityController.readAt(date['day'], date['month'], date['year']);
-      titleController.text = activity.title == null ? '' : activity.title;
-      noteController.text = activity.note == null ? '' : activity.note;
-      type = (activity.moodId == null) ? ActivityType.add : ActivityType.edit;
+      titleController.text = activity?.title == null ? '' : activity!.title!;
+      noteController.text = activity?.note == null ? '' : activity!.note!;
+      type = (activity?.moodId == null) ? ActivityType.add : ActivityType.edit;
     });
   }
 
-  c.CupertinoDynamicColor _getMoodColor(c.BuildContext context) {
+  c.Color _getMoodColor(c.BuildContext context) {
     return c.CupertinoDynamicColor.resolve(
-        activity.moodId == null
+        activity?.moodId == null
             ? c.CupertinoColors.tertiarySystemGroupedBackground
             : getColor(
-                MoodColor.values[activity.moodId],
+                MoodColor.values[activity!.moodId!],
               ),
         context);
   }
@@ -113,8 +116,8 @@ class _ActivityEditSheetState extends State<ActivityEditSheet> {
         leading: Container(),
         middle: Text('${(type == ActivityType.add) ? 'Add' : 'Edit'} Activity'),
         trailing: c.CupertinoButton(
-          onPressed: activity.isFilled() ? () => onDone(context) : null,
-          child: Text('Done'),
+          onPressed: activity!.isFilled() ? () => onDone(context) : null,
+          child: const Text('Done'),
           padding: EdgeInsets.zero,
         ),
         border: null,
@@ -124,7 +127,7 @@ class _ActivityEditSheetState extends State<ActivityEditSheet> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Padding(padding: EdgeInsets.symmetric(vertical: 18)),
+              const Padding(padding: EdgeInsets.symmetric(vertical: 18)),
               MyContainer(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -134,14 +137,14 @@ class _ActivityEditSheetState extends State<ActivityEditSheet> {
                       style: Style.body(context),
                     ),
                     Text(
-                      '${activity.dateFormat()}',
+                      '${activity!.dateFormat()}',
                       style: Style.bodySecondary(context),
                     ),
                   ],
                 ),
                 onTap: onDateTap,
               ),
-              Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+              const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
               ColorContainer(
                 text: 'Mood',
                 color: _getMoodColor(context),
@@ -189,6 +192,7 @@ class _ActivityEditSheetState extends State<ActivityEditSheet> {
 /// [ActivityEditSheet] initial route.
 /// Takes confirmation before poping the scope with [CupertinoActionSheet]
 class ActivityRouteInitializer extends StatelessWidget {
+  static const String route = '/edit';
   ActivityRouteInitializer(this.activity);
 
   final Activity activity;
@@ -225,7 +229,7 @@ class ActivityRouteInitializer extends StatelessWidget {
     return WillPopScope(
       onWillPop: () => _handlePopScope(context),
       child: Navigator(
-        initialRoute: 'edit/title',
+        initialRoute: ActivityEditSheet.route,
         onGenerateRoute: (settings) => RouteGenerator.activityRoute(settings, activity),
       ),
     );

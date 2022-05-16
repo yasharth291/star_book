@@ -12,7 +12,8 @@ import '../widgets/my_container.dart';
 /// Time Picker Screen displays option to switch select time for reminder.
 @deprecated
 class TimePickerSheet extends StatefulWidget {
-  final RouteSettings settings;
+  static const String route = '/edit/time';
+  final RouteSettings? settings;
 
   TimePickerSheet(this.settings);
 
@@ -22,7 +23,7 @@ class TimePickerSheet extends StatefulWidget {
 
 class _TimePickerSheetState extends State<TimePickerSheet> {
   c.TextEditingController timeController = new c.TextEditingController();
-  DateTime _time;
+  late DateTime _time;
 
   @override
   void initState() {

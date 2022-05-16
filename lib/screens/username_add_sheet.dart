@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart' as c;
 import 'package:flutter/widgets.dart';
+import 'package:star_book/models/user.dart';
+import 'package:star_book/screens/home_page.dart';
 
 //Files
 import '../controllers/global_setting.dart';
-import '../models/global_setting.dart';
 import '../styles/style.dart';
 import '../utils/string.dart';
 
@@ -11,15 +12,16 @@ import '../utils/string.dart';
 ///
 /// Input form to store Username of user in [User] table.
 class UsernameAddSheet extends StatefulWidget {
+  static const String route = '/username_add';
   @override
   _UsernameAddSheetState createState() => _UsernameAddSheetState();
 }
 
 class _UsernameAddSheetState extends State<UsernameAddSheet> {
-  TextEditingController textController;
-  User user;
+  late final TextEditingController textController;
+  late User user;
   final int maxLength = 20;
-  int remainingChar;
+  late int remainingChar;
 
   @override
   void initState() {
@@ -40,7 +42,7 @@ class _UsernameAddSheetState extends State<UsernameAddSheet> {
   void onTextChanged() {
     setState(() {
       remainingChar = maxLength - textController.text.length;
-      user.name = textController.text;
+      user = user.copyWith(name: textController.text);
     });
   }
 
@@ -53,10 +55,10 @@ class _UsernameAddSheetState extends State<UsernameAddSheet> {
         context,
       ),
       child: SafeArea(
-        minimum: EdgeInsets.symmetric(horizontal: 16),
+        minimum: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            Spacer(flex: 24),
+            const Spacer(flex: 24),
             Align(
               alignment: Alignment.topLeft,
               child: Text(
@@ -64,18 +66,18 @@ class _UsernameAddSheetState extends State<UsernameAddSheet> {
                 style: Style.largeTitle(context),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'So nice to meet you! What do your friends call you?',
               style: Style.title(context),
             ),
-            Spacer(flex: 22),
+            const Spacer(flex: 22),
             c.CupertinoTextField(
               maxLength: maxLength,
               controller: textController,
               placeholder: 'Your Name',
               keyboardType: TextInputType.text,
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 color: c.CupertinoDynamicColor.resolve(
@@ -85,7 +87,7 @@ class _UsernameAddSheetState extends State<UsernameAddSheet> {
               ),
             ),
             c.Container(
-              padding: EdgeInsets.only(top: 5),
+              padding: const EdgeInsets.only(top: 5),
               alignment: Alignment.centerRight,
               child: Text(
                 '${textController.text.length} / $maxLength',
@@ -97,7 +99,7 @@ class _UsernameAddSheetState extends State<UsernameAddSheet> {
                 ),
               ),
             ),
-            Spacer(flex: 46),
+            const Spacer(flex: 46),
             c.CupertinoButton(
               onPressed: isNullOrEmpty(textController.text) ? null : () => onContinuePressed(context),
               color: c.CupertinoDynamicColor.resolve(
@@ -109,7 +111,7 @@ class _UsernameAddSheetState extends State<UsernameAddSheet> {
                 style: Style.buttonText(context),
               ),
             ),
-            Spacer(flex: 8),
+            const Spacer(flex: 8),
           ],
         ),
       ),
@@ -118,6 +120,6 @@ class _UsernameAddSheetState extends State<UsernameAddSheet> {
 
   void onContinuePressed(c.BuildContext context) async {
     GlobalSettingController.setUser(user);
-    await Navigator.of(context).pushReplacementNamed("home");
+    await Navigator.of(context).pushNamed(Home.route);
   }
 }

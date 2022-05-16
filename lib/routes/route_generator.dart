@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:star_book/models/activity.dart';
 
 // Files
 import '../screens/acknowledgement_sheet/acknowledgement_sheet.dart';
@@ -19,7 +20,8 @@ import '../utils/bottom_sheet.dart';
 /// Centralised routing class.
 /// Static methods inside, define named routes
 class RouteGenerator {
-  static final RouteGenerator routeGeneratorSingleton = RouteGenerator._internal();
+  static final RouteGenerator routeGeneratorSingleton =
+      RouteGenerator._internal();
   RouteGenerator._internal();
   factory RouteGenerator() => routeGeneratorSingleton;
 
@@ -28,29 +30,29 @@ class RouteGenerator {
   ) {
     final args = settings.arguments;
     switch (settings.name) {
-      case 'username_add':
+      case UsernameAddSheet.route:
         return MaterialWithModalsPageRoute(
           builder: (context) => UsernameAddSheet(),
         );
-      case 'home':
+      case Home.route:
         return MaterialWithModalsPageRoute(
           builder: (context) => Home(),
         );
-      case 'activity':
+      case ActivityPage.route:
         return MaterialWithModalsPageRoute(
-          builder: (context) => ActivityPage(args),
+          builder: (context) => ActivityPage(args as Activity),
         );
-      case 'year':
+      case YearPage.route:
         return MaterialWithModalsPageRoute(
           builder: (context) => YearPage(),
         );
-      case 'preferance':
+      case PreferenceRouteInitializer.route:
         return CupertinoModalBottomSheetRouteWrapper(
-          builder: (context, controller) => PreferenceRouteInitializer(),
+          builder: (context) => PreferenceRouteInitializer(),
         );
-      case 'edit':
+      case ActivityRouteInitializer.route:
         return CupertinoModalBottomSheetRouteWrapper(
-          builder: (context, controller) => ActivityRouteInitializer(args),
+          builder: (context) => ActivityRouteInitializer(args as Activity),
         );
       default:
         return MaterialWithModalsPageRoute(
@@ -65,19 +67,19 @@ class RouteGenerator {
   ) {
     final args = settings.arguments;
     switch (settings.name) {
-      case 'edit/title':
+      case ActivityEditSheet.route:
         return MaterialWithModalsPageRoute(
           builder: (context) => ActivityEditSheet(activity),
         );
-      case 'edit/mood':
+      case MoodSheet.route:
         return MaterialWithModalsPageRoute(
           builder: (context) => MoodSheet(),
         );
-      case 'edit/date':
+      case DatePickerSheet.route:
         return MaterialWithModalsPageRoute(
           builder: (context) => DatePickerSheet(settings),
         );
-      case 'edit/time':
+      case TimePickerSheet.route:
         return MaterialWithModalsPageRoute(
           builder: (context) => TimePickerSheet(settings),
         );
@@ -93,17 +95,17 @@ class RouteGenerator {
   ) {
     final args = settings.arguments;
     switch (settings.name) {
-      case 'preference/settings':
+      case PreferenceSheet.route:
         return MaterialWithModalsPageRoute(
           builder: (context) => PreferenceSheet(),
         );
-      case 'preference/acknowledgement':
+      case AcknowledgementSheet.route:
         return MaterialWithModalsPageRoute(
           builder: (context) => AcknowledgementSheet(),
         );
-      case 'preference/acknowledgement/licenses':
+      case PackageSheet.route:
         return MaterialWithModalsPageRoute(
-          builder: (context) => PackageSheet(args),
+          builder: (context) => PackageSheet(args as PackageSheetArgument),
         );
       default:
         return MaterialWithModalsPageRoute(
